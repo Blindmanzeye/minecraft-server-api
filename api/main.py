@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from mcrcon import MCRcon
 from dotenv import load_dotenv
 import os
+import subprocess
 
 load_dotenv()
 app = FastAPI()
@@ -47,4 +48,4 @@ def start_server(credentials: HTTPAuthorizationCredentials = Depends(security)):
     bash_path = os.getenv("BASH_PATH")
     if not bash_path:
         return {"error": "BASH_PATH is not set in the environment variables."}
-    os.system(f"bash {bash_path}/start.sh")
+    subprocess.run(["bash", f"{bash_path}/start.sh"])
