@@ -18,9 +18,10 @@ def stop_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     if token != os.getenv("SERVER_SECRET_KEY", "sixseven"):
         raise HTTPException(status_code=401, detail="Invalid token")
-    with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
-        response = mcr.command("/chunky pause")
-    return {"message": "chunky stopped", "response": response}
+    def _run():
+        with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
+            return mcr.command("/chunky pause")
+    return _run()
 
 @app.get("/start-chunky")
 async def start_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -33,16 +34,17 @@ async def start_chunky(credentials: HTTPAuthorizationCredentials = Depends(secur
     return _run()
 
 @app.get("/restart-server")
-def restart_server(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def restart_server(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     if token != os.getenv("SERVER_SECRET_KEY"):
             raise HTTPException(status_code=401, detail="Invalid token")
-    with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
-        response = mcr.command("/stop")
-    return {"message": "Server restarted", "response": response}
+    def _run():
+        with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
+            return mcr.command("/stop")
+    return _run()
 
 @app.get("/start-server")
-def start_server(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def start_server(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     if token != os.getenv("SERVER_SECRET_KEY"):
             raise HTTPException(status_code=401, detail="Invalid token")
