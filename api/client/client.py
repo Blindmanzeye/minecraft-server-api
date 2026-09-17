@@ -9,7 +9,7 @@ SECRET_KEY = getpass.getpass("Enter Secret key: ")
 if not SECRET_KEY:
     SECRET_KEY = os.getenv("SECRET_KEY")
 
-SERVER_URL = os.getenv("SERVER_URL", "mc.blindmanzeye.me")
+SERVER_URL = os.getenv("SERVER_URL", "http://localhost:8000")
 headers = {
     "Authorization": f"Bearer {SECRET_KEY}",
     "Content-type": "application/json"

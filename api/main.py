@@ -9,27 +9,28 @@ load_dotenv()
 app = FastAPI()
 security = HTTPBearer()
 
-RCON_HOST = os.getenv("RCON_HOST")
-RCON_PASSWORD = os.getenv("RCON_PASSWORD")
+RCON_HOST = os.getenv("RCON_HOST", "localhost")
+RCON_PASSWORD = os.getenv("RCON_PASSWORD", "sixseven")
 RCON_PORT = int(os.getenv("RCON_PORT", 25575))
 
 @app.get("/stop-chunky")
 def stop_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
-    if token != os.getenv("SERVER_SECRET_KEY"):
+    if token != os.getenv("SERVER_SECRET_KEY", "sixseven"):
         raise HTTPException(status_code=401, detail="Invalid token")
     with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
         response = mcr.command("/chunky pause")
     return {"message": "chunky stopped", "response": response}
 
 @app.get("/start-chunky")
-def start_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def start_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
-    if token != os.getenv("SERVER_SECRET_KEY"):
+    if token != os.getenv("SERVER_SECRET_KEY", "sixseven"):
             raise HTTPException(status_code=401, detail="Invalid token")
-    with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
-        response = mcr.command("/chunky resume")
-    return {"message": "chunky started", "response": response}
+    def _run():
+        with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
+            return mcr.command("say this is a test command for something that the owner is working on epstien fuck jews")
+    return _run()
 
 @app.get("/restart-server")
 def restart_server(credentials: HTTPAuthorizationCredentials = Depends(security)):
