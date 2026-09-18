@@ -10,13 +10,13 @@ app = FastAPI()
 security = HTTPBearer()
 
 RCON_HOST = os.getenv("RCON_HOST", "localhost")
-RCON_PASSWORD = os.getenv("RCON_PASSWORD", "sixseven")
+RCON_PASSWORD = os.getenv("RCON_PASSWORD")
 RCON_PORT = int(os.getenv("RCON_PORT", 25575))
 print(os.getenv("SERVER_SECRET_KEY", "sixseven"))
 @app.get("/stop-chunky")
 def stop_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
-    if token != os.getenv("SERVER_SECRET_KEY", "sixseven"):
+    if token != os.getenv("SERVER_SECRET_KEY"):
         raise HTTPException(status_code=401, detail="Invalid token")
     def _run():
         with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
@@ -26,7 +26,7 @@ def stop_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
 @app.get("/start-chunky")
 async def start_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
-    if token != os.getenv("SERVER_SECRET_KEY", "sixseven"):
+    if token != os.getenv("SERVER_SECRET_KEY"):
             raise HTTPException(status_code=401, detail="Invalid token")
     def _run():
         with MCRcon(RCON_HOST, RCON_PASSWORD, port=RCON_PORT) as mcr:
