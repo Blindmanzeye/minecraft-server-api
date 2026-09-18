@@ -12,7 +12,7 @@ security = HTTPBearer()
 RCON_HOST = os.getenv("RCON_HOST", "localhost")
 RCON_PASSWORD = os.getenv("RCON_PASSWORD", "sixseven")
 RCON_PORT = int(os.getenv("RCON_PORT", 25575))
-
+print(os.getenv("SERVER_SECRET_KEY", "sixseven"))
 @app.get("/stop-chunky")
 def stop_chunky(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
