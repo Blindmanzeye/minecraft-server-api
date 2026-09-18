@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from mcrcon import MCRcon
-from dotenv import load_dotenv
+from mcrcon import MCRcon # type: ignore
+from dotenv import load_dotenv # type: ignore
 import os
 import subprocess
 
